@@ -17,14 +17,22 @@ def cifrar(nombre_cifrado):
     limpiar_pantalla()
 
     if nombre_cifrado == "Cesar":
-        print("Cifrado del Cesar\n\n")
-        return
+        print("CIFRADO DEL CESAR\n\n")
+
+        texto = input("Introduce el texto a cifrar: ").upper()
+
+        print(f"\nMensaje cifrado: {cifrar_cesar(texto)}")
+
+        aux = input("\n\nPresiona cualquier tecla para regresar...")
+        sub_menu("Cesar")
+
     elif nombre_cifrado == "Polybios":
-        print("Cifrado Polybios\n\n")
+        print("CIFRADO POLYBIOS\n\n")
         return
     elif nombre_cifrado == "Vigenere":
-        print("Cifrado Vigenére\n\n")
-        texto = input("Introduce el texto: ").upper()
+        print("CIFRADO VIGENÉRE\n\n")
+
+        texto = input("Introduce el texto a cifrar: ").upper()
         clave = input("Introduce la clave: ").upper()
 
         cifrar_vegenere(texto, clave)
@@ -41,15 +49,21 @@ def decifrar(nombre_cifrado):
     limpiar_pantalla()
 
     if nombre_cifrado == "Cesar":
-        print("Cifrado del Cesar\n\n")
+        print("CIFRADO DEL CESAR\n\n")
+        texto_cifrado = input("Introduce el texto cifrado: ").upper()
 
-        return  
+        print(f"\nMensaje descifrado: {descifrar_cesar(texto_cifrado)}")
+
+
+        aux = input("\n\nPresiona cualquier tecla para regresar...")
+        sub_menu("Cesar")
+
     elif nombre_cifrado == "Polybios":
-        print("Cifrado Polybios\n\n")
+        print("CIFRADO POLYBIOS\n\n")
 
         return
     elif nombre_cifrado == "Vigenere":
-        print("Cifrado del Cesar\n\n")
+        print("CIFRADO VIGENÉRE\n\n")
 
         texto_cifrado = input("Introduce el texto cifrado: ").upper()
         clave = input("Introduce la clave: ").upper()
@@ -106,6 +120,40 @@ def cifrar_vegenere(texto, clave):
 
     print(f"\nTexto cifrado: {resultado}")
 
+
+#Cifrado el Cesar
+
+def cifrar_cesar(mensaje, desplazamiento=3):
+    """
+    Cifra un mensaje usando el cifrado César con un desplazamiento de 3 por defecto.
+    """
+    resultado = []
+    
+    for letra in mensaje:
+        if letra.isalpha():  # Si es una letra
+            base = ord('A') if letra.isupper() else ord('a')
+            nueva_letra = chr((ord(letra) - base + desplazamiento) % 26 + base)
+            resultado.append(nueva_letra)
+        else:
+            # Si no es una letra, lo dejamos como está (espacios, puntuación, etc.)
+            resultado.append(letra)
+    
+    return ''.join(resultado)
+
+"""
+DECIFRADOS
+"""
+
+#Decifrado del Cesar
+
+def descifrar_cesar(mensaje, desplazamiento=3):
+    """
+    Descifra un mensaje cifrado con el cifrado César, usando el mismo desplazamiento.
+    """
+
+    #print(cifrar_cesar(mensaje, -desplazamiento))
+    return cifrar_cesar(mensaje, -desplazamiento)  # Invertimos el desplazamiento para descifrar
+
 #Decifrado Vegenére
 
 def descifrar_vegenere(texto_cifrado, clave):
@@ -145,8 +193,9 @@ def mostrar_menu():
 
 def sub_menu(titulo):
     limpiar_pantalla()
-    while True:
-        print(f"CIFRADO {titulo}\n")
+    opcion=""
+    while opcion != "3":
+        print(f"CIFRADO {titulo.upper()}\n")
 
         print("1. Cifrar texto")
         print("2. Decifrar texto")
@@ -159,15 +208,16 @@ def sub_menu(titulo):
         elif opcion == "2":
             decifrar(titulo)
         elif opcion == "3":
+            time.sleep(5)
             print("\n\nRegresando al menu...")
             time.sleep(1)
             break
-            menu() 
         else:
             limpiar_pantalla()
             print("Opción no válida.")
 
     limpiar_pantalla()
+    menu() 
            
 
 
@@ -178,7 +228,7 @@ def menu():
         mostrar_menu()
         opcion = input("\n\nSelecciona una opción: ")
         if opcion == "1":
-            return   
+            sub_menu("Cesar")   
         elif opcion == "2":
             opcion2()
         elif opcion == "3":
