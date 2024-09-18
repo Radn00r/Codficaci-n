@@ -4,6 +4,14 @@ import os
 
 alfabeto = "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ"
 
+matriz_polybios = [
+    ['A', 'B', 'C', 'D', 'E'],
+    ['F', 'G', 'H', 'I', 'K'],
+    ['L', 'M', 'N', 'O', 'P'],
+    ['Q', 'R', 'S', 'T', 'U'],
+    ['V', 'W', 'X', 'Y', 'Z']
+]
+
 
 def limpiar_pantalla():
 
@@ -26,9 +34,19 @@ def cifrar(nombre_cifrado):
         aux = input("\n\nPresiona cualquier tecla para regresar...")
         sub_menu("Cesar")
 
+
     elif nombre_cifrado == "Polybios":
         print("CIFRADO POLYBIOS\n\n")
-        return
+
+        texto = input("Introduce el texto a cifrar: ").upper()
+
+        print(f"\nMensaje cifrado: {cifrar_polybios(texto)}")
+
+        aux = input("\n\nPresiona cualquier tecla para regresar...")
+        sub_menu("Polybios")
+
+
+
     elif nombre_cifrado == "Vigenere":
         print("CIFRADO VIGENÉRE\n\n")
 
@@ -61,7 +79,15 @@ def decifrar(nombre_cifrado):
     elif nombre_cifrado == "Polybios":
         print("CIFRADO POLYBIOS\n\n")
 
-        return
+        texto_cifrado = input("Introduce el texto cifrado: ").upper()
+
+        print(f"\nMensaje descifrado: {decifrar_polybios(texto_cifrado)}")
+
+
+        aux = input("\n\nPresiona cualquier tecla para regresar...")
+        sub_menu("Polybios")
+
+
     elif nombre_cifrado == "Vigenere":
         print("CIFRADO VIGENÉRE\n\n")
 
@@ -76,6 +102,31 @@ def decifrar(nombre_cifrado):
         print("Error")
         time.sleep(2)
         menu()
+
+
+"""
+CIFRADOS
+"""
+
+#Cifrado el Cesar
+
+def cifrar_cesar(mensaje, desplazamiento=3):
+    """
+    Cifra un mensaje usando el cifrado César con un desplazamiento de 3 por defecto.
+    """
+    resultado = []
+    
+    for letra in mensaje:
+        if letra.isalpha():  # Si es una letra
+            base = ord('A') if letra.isupper() else ord('a')
+            nueva_letra = chr((ord(letra) - base + desplazamiento) % 26 + base)
+            resultado.append(nueva_letra)
+        else:
+            # Si no es una letra, lo dejamos como está (espacios, puntuación, etc.)
+            resultado.append(letra)
+    
+    return ''.join(resultado)
+
 
 
 #Cifrado Vegenére
@@ -120,25 +171,24 @@ def cifrar_vegenere(texto, clave):
 
     print(f"\nTexto cifrado: {resultado}")
 
+#Cifrado Polybios
 
-#Cifrado el Cesar
-
-def cifrar_cesar(mensaje, desplazamiento=3):
-    """
-    Cifra un mensaje usando el cifrado César con un desplazamiento de 3 por defecto.
-    """
-    resultado = []
+# Función para cifrar un mensaje usando el cifrado de Polybios
+def cifrar_polybios(mensaje):
+    mensaje = mensaje.upper().replace("J", "I")  # Convertir a mayúsculas y manejar 'I'/'J'
+    cifrar_mensaje = []
     
-    for letra in mensaje:
-        if letra.isalpha():  # Si es una letra
-            base = ord('A') if letra.isupper() else ord('a')
-            nueva_letra = chr((ord(letra) - base + desplazamiento) % 26 + base)
-            resultado.append(nueva_letra)
+    for char in mensaje:
+        if char.isalpha():  # Solo cifrar letras
+            for i, row in enumerate(matriz_polybios):
+                if char in row:
+                    j = row.index(char)
+                    cifrar_mensaje.append(str(i + 1) + str(j + 1))  # Coordenadas
         else:
-            # Si no es una letra, lo dejamos como está (espacios, puntuación, etc.)
-            resultado.append(letra)
+            cifrar_mensaje.append(char)  # Mantener los caracteres no alfabéticos
     
-    return ''.join(resultado)
+    return ' '.join(cifrar_mensaje)
+
 
 """
 DECIFRADOS
@@ -153,6 +203,27 @@ def descifrar_cesar(mensaje, desplazamiento=3):
 
     #print(cifrar_cesar(mensaje, -desplazamiento))
     return cifrar_cesar(mensaje, -desplazamiento)  # Invertimos el desplazamiento para descifrar
+
+
+#Decifrado Polybios
+# Función para descifrar un mensaje cifrado en Polybios
+def decifrar_polybios(mensaje_codificado):
+    descifrar_mensaje = []
+    
+    i = 0
+    while i < len(mensaje_codificado):
+        if mensaje_codificado[i].isdigit():
+            row = int(mensaje_codificado[i]) - 1
+            col = int(mensaje_codificado[i + 1]) - 1
+            descifrar_mensaje.append(matriz_polybios[row][col])
+            i += 2
+        else:
+            descifrar_mensaje.append(mensaje_codificado[i])
+            i += 1
+    
+    return ''.join(descifrar_mensaje)
+
+
 
 #Decifrado Vegenére
 
@@ -188,7 +259,7 @@ def mostrar_menu():
     print("1. Cifrado del Cesar")
     print("2. Cifrado Polybios")
     print("3. Cifrado Vigenére")
-    print("0. Salir")
+    print("4. Salir")
 
 
 def sub_menu(titulo):
@@ -208,7 +279,7 @@ def sub_menu(titulo):
         elif opcion == "2":
             decifrar(titulo)
         elif opcion == "3":
-            time.sleep(5)
+            time.sleep(1)
             print("\n\nRegresando al menu...")
             time.sleep(1)
             break
@@ -230,7 +301,7 @@ def menu():
         if opcion == "1":
             sub_menu("Cesar")   
         elif opcion == "2":
-            opcion2()
+            sub_menu("Polybios")
         elif opcion == "3":
             sub_menu("Vigenere")
         elif opcion == "4":
@@ -243,6 +314,13 @@ def menu():
             limpiar_pantalla()
 
 
-print("holaaaaaa")
+def main():
+    menu()
 
-menu()
+
+
+
+if __name__ == "__main__":
+    main()
+
+
